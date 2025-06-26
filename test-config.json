@@ -1,0 +1,27 @@
+{
+  "wordpress": {
+    "url": "https://example-test.com",
+    "username": "test-user",
+    "password": "test-password"
+  },
+  "claude": {
+    "apiKey": "test-api-key",
+    "model": "claude-3-haiku-20240307"
+  },
+  "article": {
+    "topics": [
+      "屋久島企業研修",
+      "組織変革",
+      "チームビルディング"
+    ],
+    "minLength": 2000,
+    "maxLength": 3000,
+    "category": 1,
+    "status": "draft"
+  },
+  "schedule": {
+    "intervalHours": 24,
+    "startTime": "09:00",
+    "timezone": "Asia/Tokyo"
+  }
+}

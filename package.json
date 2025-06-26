@@ -1,0 +1,37 @@
+{
+  "name": "wordpress-auto-poster",
+  "version": "1.0.0",
+  "description": "株式会社創 WordPress自動投稿システム - Claude APIとWordPress REST APIを使用したブログ記事自動生成・投稿システム",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "node main.js test",
+    "post": "node main.js post",
+    "auto": "node main.js auto",
+    "schedule": "node main.js schedule"
+  },
+  "keywords": [
+    "wordpress",
+    "claude-api",
+    "auto-posting",
+    "blog-automation",
+    "content-generation"
+  ],
+  "author": "株式会社創（SOU）",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "https": "^1.0.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-repo/wordpress-auto-poster.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-repo/wordpress-auto-poster/issues"
+  },
+  "homepage": "https://github.com/your-repo/wordpress-auto-poster#readme"
+}
