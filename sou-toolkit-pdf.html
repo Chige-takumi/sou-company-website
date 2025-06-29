@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>創(SOU)式つながり組織 実践ツールキット</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+        
+        .pdf-container {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+        }
+        
+        /* 表紙 */
+        .cover-page {
+            height: 297mm;
+            background: linear-gradient(135deg, #2D5016 0%, #4A7C59 50%, #8FBC8F 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            page-break-after: always;
+            padding: 40mm;
+        }
+        
+        .cover-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/><circle cx="20" cy="20" r="1" fill="white" opacity="0.05"/><circle cx="80" cy="30" r="1.5" fill="white" opacity="0.08"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .cover-content {
+            z-index: 1;
+            position: relative;
+        }
+        
+        .main-title {
+            font-size: 2.8em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .sub-title {
+            font-size: 1.4em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .company-logo {
+            font-size: 1.2em;
+            margin-top: 60px;
+            padding: 20px;
+            border: 2px solid white;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .version-info {
+            position: absolute;
+            bottom: 30mm;
+            right: 30mm;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        /* ページ共通スタイル */
+        .page {
+            min-height: 297mm;
+            padding: 25mm 20mm;
+            page-break-after: always;
+            background: white;
+        }
+        
+        .page:last-child {
+            page-break-after: auto;
+        }
+        
+        .page-header {
+            border-bottom: 3px solid #4A7C59;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 1.8em;
+            color: #2D5016;
+            font-weight: bold;
+        }
+        
+        .page-subtitle {
+            font-size: 1em;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        /* 目次 */
+        .toc-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dotted #ccc;
+            font-size: 1.1em;
+        }
+        
+        .toc-number {
+            color: #4A7C59;
+            font-weight: bold;
+            min-width: 30px;
+        }
+        
+        .toc-title {
+            flex-grow: 1;
+            margin-left: 15px;
+        }
+        
+        .toc-page {
+            color: #666;
+            font-weight: bold;
+        }
+        
+        /* セクション */
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.4em;
+            color: #2D5016;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background: linear-gradient(90deg, #E8F5E8, transparent);
+            border-left: 4px solid #4A7C59;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .subsection-title {
+            font-size: 1.2em;
+            color: #4A7C59;
+            margin: 20px 0 10px 0;
+            font-weight: bold;
+        }
+        
+        /* ツールボックス */
+        .tool-box {
+            background: #f8fffe;
+            border: 2px solid #4A7C59;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .tool-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #2D5016;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .tool-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            background: #4A7C59;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+        
+        /* チェックリスト */
+        .checklist {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            margin: 8px 0;
+            padding: 5px 0;
+        }
+        
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #4A7C59;
+            border-radius: 3px;
+            margin-right: 10px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+        
+        /* スコア表 */
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .score-table th {
+            background: #4A7C59;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        .score-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .score-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        /* フォーム要素 */
+        .form-field {
+            margin: 15px 0;
+        }
+        
+        .form-label {
+            font-weight: bold;
+            color: #2D5016;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        .form-input {
+            border: none;
+            border-bottom: 2px solid #4A7C59;
+            padding: 5px 0;
+            width: 200px;
+            background: transparent;
+            font-size: 1em;
+        }
+        
+        .form-textarea {
+            border: 2px solid #4A7C59;
+            border-radius: 6px;
+            padding: 10px;
+            width: 100%;
+            min-height: 60px;
+            background: white;
+            resize: vertical;
+        }
+        
+        /* ステップガイド */
+        .step-guide {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px 0;
+            padding: 15px;
+            background: linear-gradient(90deg, #E8F5E8, white);
+            border-radius: 10px;
+        }
+        
+        .step-number {
+            background: #4A7C59;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .step-content {
+            flex-grow: 1;
+        }
+        
+        .step-title {
+            font-weight: bold;
+            color: #2D5016;
+            margin-bottom: 5px;
+        }
+        
+        /* ハイライトボックス */
+        .highlight-box {
+            background: linear-gradient(135deg, #FFF9E6, #FFFBF0);
+            border: 2px solid #FFD700;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .highlight-box::before {
+            content: "💡";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: white;
+            padding: 0 10px;
+            font-size: 1.2em;
+        }
+        
+        /* タイプ別カラー */
+        .type-harmony { border-left-color: #FFD700; background: linear-gradient(90deg, #FFF9E6, transparent); }
+        .type-growth { border-left-color: #4A7C59; background: linear-gradient(90deg, #E8F5E8, transparent); }
+        .type-development { border-left-color: #4A90E2; background: linear-gradient(90deg, #E6F2FF, transparent); }
+        .type-transformation { border-left-color: #E74C3C; background: linear-gradient(90deg, #FFE6E6, transparent); }
+        
+        /* ボタンスタイル */
+        .action-button {
+            background: #4A7C59;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .action-button:hover {
+            background: #2D5016;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        
+        .pdf-button {
+            background: #E74C3C;
+        }
+        
+        .pdf-button:hover {
+            background: #C0392B;
+        }
+        
+        .button-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        /* 印刷用スタイル */
+        @media print {
+            .pdf-container {
+                box-shadow: none;
+                max-width: none;
+            }
+            
+            .page {
+                page-break-after: always;
+                margin: 0;
+                box-shadow: none;
+            }
+            
+            .cover-page {
+                page-break-after: always;
+            }
+            
+            .button-container {
+                display: none;
+            }
+        }
+        
+        /* レスポンシブ対応 */
+        @media screen and (max-width: 768px) {
+            .pdf-container {
+                max-width: 100%;
+                margin: 0;
+            }
+            
+            .page {
+                padding: 15px;
+                min-height: auto;
+            }
+            
+            .cover-page {
+                height: auto;
+                min-height: 100vh;
+                padding: 40px 20px;
+            }
+            
+            .main-title {
+                font-size: 2em;
+            }
+            
+            .sub-title {
+                font-size: 1.1em;
+            }
+            
+            .button-container {
+                position: relative;
+                right: auto;
+                top: auto;
+                margin: 20px;
+            }
+        }
+    </style>
+    <!-- html2pdf.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <!-- PDF生成・印刷ボタン -->
+    <div class="button-container">
+        <button class="action-button pdf-button" onclick="downloadPDF()">📄 PDFダウンロード</button>
+        <button class="action-button" onclick="printDocument()">🖨️ 印刷</button>
+        <button class="action-button" onclick="saveFormData()">💾 データ保存</button>
+        <button class="action-button" onclick="loadFormData()">📂 データ読込</button>
+    </div>
+
+    <div class="pdf-container" id="pdf-content">
+        <!-- 表紙 -->
+        <div class="cover-page">
+            <div class="cover-content">
+                <h1 class="main-title">創(SOU)式<br>つながり組織</h1>
+                <h2 class="sub-title">実践ツールキット</h2>
+                <div style="font-size: 1.1em; margin: 30px 0;">
+                    〜 今日から使える！組織のつながりを深める実践ガイド 〜
+                </div>
+                <div class="company-logo">
+                    <strong>株式会社創（SOU）</strong><br>
+                    「今ここから創める、未来を創る」
+                </div>
+            </div>
+            <div class="version-info">
+                Version 1.0<br>
+                2025年6月版
+            </div>
+        </div>
+        
+        <!-- 目次 -->
+        <div class="page">
+            <div class="page-header">
+                <h2 class="page-title">📋 目次</h2>
+                <p class="page-subtitle">Contents</p>
+            </div>
+            
+            <div class="toc-item">
+                <span class="toc-number">1</span>
+                <span class="toc-title">基本ツールセット（全組織共通）</span>
+                <span class="toc-page">3</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-number">1-1</span>
+                <span class="toc-title">日常つながりチェックシート</span>
+                <span class="toc-page">4</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-number">1-2</span>
+                <span class="toc-title">つながり対話ファシリテーションガイド</span>
+                <span class="toc-page">6</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-number">1-3</span>
+                <span class="toc-title">強み発見＆活用マップ</span>
+                <span class="toc-page">8</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-number">1-4</span>
+                <span class="toc-title">持続可能成長チェックリスト</span>
+                <span class="toc-page">10</span>
+            </div>
+            
+            <div class="toc-item">
+                <span class="toc-number">2</span>
+                <span class="toc-title">組織タイプ別専用ツール</span>
+                <span class="toc-page">12</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-number">2-1</span>
+                <span class="toc-title">⭐ 調和型組織向けツール</span>
+                <span class="toc-page">13</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-number">2-2</span>
+                <span class="toc-title">🌱 成長型組織向けツール</span>
+                <span class="toc-page">16</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-number">2-3</span>
+                <span class="toc-title">🔄 発展型組織向けツール</span>
+                <span class="toc-page">19</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-number">2-4</span>
+                <span class="toc-title">🔥 変革型組織向けツール</span>
+                <span class="toc-page">22</span>
+            </div>
+            
+            <div class="toc-item">
+                <span class="toc-number">3</span>
+                <span class="toc-title">90日実践プログラム</span>
+                <span class="toc-page">26</span>
+            </div>
+            
+            <div class="toc-item">
+                <span class="toc-number">4</span>
+                <span class="toc-title">効果測定ツール</span>
+                <span class="toc-page">30</span>
+            </div>
+            
+            <div class="toc-item">
+                <span class="toc-number">5</span>
+                <span class="toc-title">活用ガイド</span>
+                <span class="toc-page">32</span>
+            </div>
+        </div>
+        
+        <!-- 基本ツールセット -->
+        <div class="page">
+            <div class="page-header">
+                <h2 class="page-title">🛠️ 基本ツールセット</h2>
+                <p class="page-subtitle">全組織共通で使える実践ツール</p>
+            </div>
+            
+            <div class="highlight-box">
+                <h3 style="color: #2D5016; margin-bottom: 10px;">このセクションの使い方</h3>
+                <p>以下の4つのツールは、組織タイプに関係なくすべての組織でご活用いただけます。まずはこちらから始めて、つながりを深める基盤を作りましょう。</p>
+            </div>
+            
+            <div class="section">
+                <h3 class="section-title">📊 ツール一覧</h3>
+                
+                <div class="tool-box">
+                    <div class="tool-title">
+                        <span class="tool-icon">1</span>
+                        日常つながりチェックシート
+                    </div>
+                    <p><strong>目的：</strong>毎日の小さな変化を積み重ねて、つながりを強化する習慣作り</p>
+                    <p><strong>使用頻度：</strong>朝会または終礼で3分間実施</p>
+                    <p><strong>効果：</strong>つながり意識の向上、継続的な改善</p>
+                </div>
+                
+                <div class="tool-box">
+                    <div class="tool-title">
+                        <span class="tool-icon">2</span>
+                        つながり対話ファシリテーションガイド
+                    </div>
+                    <p><strong>目的：</strong>心理的安全性を保ちながら深い対話を実現</p>
+                    <p><strong>使用頻度：</strong>週1回、月2回の対話セッション</p>
+                    <p><strong>効果：</strong>信頼関係構築、課題解決力向上</p>
+                </div>
+                
+                <div class="tool-box">
+                    <div class="tool-title">
+                        <span class="tool-icon">3</span>
+                        強み発見＆活用マップ
+                    </div>
+                    <p><strong>目的：</strong>一人ひとりの個性と才能を組織の力に変換</p>
+                    <p><strong>使用頻度：</strong>月1回の振り返り、年2回の見直し</p>
+                    <p><strong>効果：</strong>個性の活用、チーム力最大化</p>
+                </div>
+                
+                <div class="tool-box">
+                    <div class="tool-title">
+                        <span class="tool-icon">4</span>
+                        持続可能成長チェックリスト
+                    </div>
+                    <p><strong>目的：</strong>短期成果と長期持続性のバランス設計</p>
+                    <p><strong>使用頻度：</strong>重要な意思決定時</p>
+                    <p><strong>効果：</strong>持続可能な成長、燃え尽き防止</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ツール1: 日常つながりチェックシート -->
+        <div class="page">
+            <div class="page-header">
+                <h2 class="page-title">📊 ツール1: 日常つながりチェックシート</h2>
+                <p class="page-subtitle">毎日3分で組織のつながりを強化</p>
+            </div>
+            
+            <div class="section">
+                <h3 class="subsection-title">📝 チェックシート（毎日記入）</h3>
+                
+                <div class="tool-box">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <strong style="font-size: 1.2em;">今日のつながりチェック</strong><br>
+                        <span style="color: #666;">実施日：___年___月___日</span>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #4A7C59; margin-bottom: 10px;">🌱 自然との調和（各項目1-5点で評価）</h4>
+                        <div class="checklist">
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>今日は無理のないペースで働けた</span>
+                                <div style="margin-left: auto; display: flex; gap: 5px;">
+                                    <span style="font-size: 0.9em; color: #666;">1 2 3 4 5点</span>
+                                </div>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>長期的な視点で判断できた</span>
+                                <div style="margin-left: auto; display: flex; gap: 5px;">
+                                    <span style="font-size: 0.9em; color: #666;">1 2 3 4 5点</span>
+                                </div>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>失敗を学びに変えることができた</span>
+                                <div style="margin-left: auto; display: flex; gap: 5px;">
+                                    <span style="font-size: 0.9em; color: #666;">1 2 3 4 5点</span>
+                                </div>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>変化を前向きに受け入れられた</span>
+                                <div style="margin-left: auto; display: flex; gap: 5px;">
+                                    <span style="font-size: 0.9em; color: #666;">1 2 3 4 5点</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 style="color: #4A7C59; margin: 20px 0 10px 0;">🤝 仲間とのつながり（各項目1-5点で評価）</h4>
+                        <div class="checklist">
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>部署を超えた協力ができた</span>
+                                <div style="margin-left: auto; display: flex; gap: 5px;">
+                                    <span style="font-size: 0.9em; color: #666;">1 2 3 4 5点</span>
+                                </div>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>困っている人を助けることができた</span>
+                                <div style="margin-left: auto; display: flex; gap: 5px;">
+                                    <span style="font-size: 0.9em; color: #666;">1 2 3 4 5点</span>
+                                </div>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>本音で話し合うことができた</span>
+                                <div style="margin-left: auto; display: flex; gap: 5px;">
+                                    <span style="font-size: 0.9em; color: #666;">1 2 3 4 5点</span>
+                                </div>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>お互いの多様性を活かし合えた</span>
+                                <div style="margin-left: auto; display: flex; gap: 5px;">
+                                    <span style="font-size: 0.9em; color: #666;">1 2 3 4 5点</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 style="color: #4A7C59; margin: 20px 0 10px 0;">💫 自分らしさ（各項目1-5点で評価）</h4>
+                        <div class="checklist">
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>自分らしく働くことができた</span>
+                                <div style="margin-left: auto; display: flex; gap: 5px;">
+                                    <span style="font-size: 0.9em; color: #666;">1 2 3 4 5点</span>
+                                </div>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>仕事に意味・やりがいを感じた</span>
+                                <div style="margin-left: auto; display: flex; gap: 5px;">
+                                    <span style="font-size: 0.9em; color: #666;">1 2 3 4 5点</span>
+                                </div>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>振り返りの時間を持てた</span>
+                                <div style="margin-left: auto; display: flex; gap: 5px;">
+                                    <span style="font-size: 0.9em; color: #666;">1 2 3 4 5点</span>
+                                </div>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>新しい学びがあった</span>
+                                <div style="margin-left: auto; display: flex; gap: 5px;">
+                                    <span style="font-size: 0.9em; color: #666;">1 2 3 4 5点</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: #f0f8f0; border-radius: 8px;">
+                            <strong>合計点数：___/60点</strong>
+                        </div>
+                        
+                        <div style="margin-top: 20px;">
+                            <h4 style="color: #2D5016; margin-bottom: 10px;">💡 明日のつながりアクション</h4>
+                            <div class="form-field">
+                                <label class="form-label">自然との調和：</label>
+                                <input type="text" class="form-input" style="width: 70%;">
+                            </div>
+                            <div class="form-field">
+                                <label class="form-label">仲間とのつながり：</label>
+                                <input type="text" class="form-input" style="width: 70%;">
+                            </div>
+                            <div class="form-field">
+                                <label class="form-label">自分らしさ：</label>
+                                <input type="text" class="form-input" style="width: 70%;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ツール2: つながり対話ガイド -->
+        <div class="page">
+            <div class="page-header">
+                <h2 class="page-title">💬 ツール2: つながり対話ファシリテーションガイド</h2>
+                <p class="page-subtitle">心理的安全性を保つ対話の進め方</p>
+            </div>
+            
+            <div class="section">
+                <h3 class="subsection-title">📋 対話セッションの流れ（45分）</h3>
+                
+                <div class="step-guide">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-title">場づくり（5分）</div>
+                        <div>参加者全員でグランドルールを確認し、安心して話せる環境を整えます。</div>
+                    </div>
+                </div>
+                
+                <div class="tool-box">
+                    <div class="tool-title">
+                        <span class="tool-icon">✓</span>
+                        グランドルール
+                    </div>
+                    <div class="checklist">
+                        <div class="checklist-item">
+                            <div class="checkbox"></div>
+                            <span>批判・評価をしない</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="checkbox"></div>
+                            <span>話している人の話を最後まで聞く</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="checkbox"></div>
+                            <span>「正解」を求めない</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="checkbox"></div>
+                            <span>感情も大切な情報として扱う</span>
+                        </div>
+                        <div class="checklist-item">
+                            <div class="checkbox"></div>
+                            <span>この場で話されたことは外に持ち出さない</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step-guide">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-title">チェックイン（10分）</div>
+                        <div>軽い質問から始めて、参加者がリラックスして発言できる雰囲気を作ります。</div>
+                    </div>
+                </div>
+                
+                <div class="tool-box">
+                    <div class="tool-title">
+                        <span class="tool-icon">❓</span>
+                        チェックイン質問例
+                    </div>
+                    <ul style="margin: 10px 0; padding-left: 20px;">
+                        <li>今の気持ちを天気で表すと？</li>
+                        <li>最近チームで嬉しかったことは？</li>
+                        <li>今日一番集中していることは？</li>
+                        <li>今週の小さな成功体験は？</li>
+                    </ul>
+                </div>
+                
+                <div class="step-guide">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-title">つながり対話（25分）</div>
+                        <div>3つのレベルの質問を使って、徐々に深い対話に導きます。</div>
+                    </div>
+                </div>
+                
+                <div class="tool-box">
+                    <div class="tool-title">
+                        <span class="tool-icon">🎯</span>
+                        深い対話を促す3レベル質問
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <h4 style="color: #4A7C59; margin-bottom: 8px;">レベル1（事実確認）</h4>
+                        <ul style="margin: 5px 0; padding-left: 20px; color: #666;">
+                            <li>どんなことが起きていますか？</li>
+                            <li>どんな状況ですか？</li>
+                            <li>具体的にはどのような感じでしょうか？</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <h4 style="color: #4A7C59; margin-bottom: 8px;">レベル2（感情・価値観）</h4>
+                        <ul style="margin: 5px 0; padding-left: 20px; color: #666;">
+                            <li>それについてどう感じていますか？</li>
+                            <li>なぜそれが大切だと思いますか？</li>
+                            <li>どんな気持ちが湧いてきますか？</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <h4 style="color: #4A7C59; margin-bottom: 8px;">レベル3（本質・未来）</h4>
+                        <ul style="margin: 5px 0; padding-left: 20px; color: #666;">
+                            <li>本当に大切にしたいことは何ですか？</li>
+                            <li>理想の状態はどのようなものですか？</li>
+                            <li>そのために何ができますか？</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="step-guide">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <div class="step-title">チェックアウト（5分）</div>
+                        <div>対話から得た気づきを共有し、次のアクションにつなげます。</div>
+                    </div>
+                </div>
+                
+                <div class="tool-box">
+                    <div class="tool-title">
+                        <span class="tool-icon">✨</span>
+                        チェックアウト質問例
+                    </div>
+                    <ul style="margin: 10px 0; padding-left: 20px;">
+                        <li>今日の対話で得た気づきは？</li>
+                        <li>明日から試してみたいことは？</li>
+                        <li>チームに伝えたいメッセージは？</li>
+                        <li>次回までに実践したいことは？</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ツール3: 強み発見マップ -->
+        <div class="page">
+            <div class="page-header">
+                <h2 class="page-title">⭐ ツール3: 強み発見＆活用マップ</h2>
+                <p class="page-subtitle">個人の才能をチームの力に変換</p>
+            </div>
+            
+            <div class="section">
+                <h3 class="subsection-title">🌟 個人の強み発見シート</h3>
+                
+                <div class="tool-box">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <strong style="font-size: 1.2em;">私の強み発見シート</strong>
+                    </div>
+                    
+                    <div class="form-field">
+                        <label class="form-label">名前：</label>
+                        <input type="text" class="form-input" style="width: 200px;">
+                    </div>
+                    
+                    <div style="margin: 25px 0;">
+                        <h4 style="color: #4A7C59; margin-bottom: 10px;">🌟 私の価値観（大切にしていること）</h4>
+                        <div class="form-field">
+                            <label class="form-label">1.</label>
+                            <input type="text" class="form-input" style="width: 80%;">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">2.</label>
+                            <input type="text" class="form-input" style="width: 80%;">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">3.</label>
+                            <input type="text" class="form-input" style="width: 80%;">
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 25px 0;">
+                        <h4 style="color: #4A7C59; margin-bottom: 10px;">🌟 私が得意なこと（スキル・能力）</h4>
+                        <div class="form-field">
+                            <label class="form-label">1.</label>
+                            <input type="text" class="form-input" style="width: 80%;">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">2.</label>
+                            <input type="text" class="form-input" style="width: 80%;">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">3.</label>
+                            <input type="text" class="form-input" style="width: 80%;">
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 25px 0;">
+                        <h4 style="color: #4A7C59; margin-bottom: 10px;">🌟 私がエネルギーを感じる時</h4>
+                        <div class="form-field">
+                            <label class="form-label">1.</label>
+                            <input type="text" class="form-input" style="width: 80%;">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">2.</label>
+                            <input type="text" class="form-input" style="width: 80%;">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">3.</label>
+                            <input type="text" class="form-input" style="width: 80%;">
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 25px 0;">
+                        <h4 style="color: #4A7C59; margin-bottom: 10px;">🌟 周りから感謝されること</h4>
+                        <div class="form-field">
+                            <label class="form-label">1.</label>
+                            <input type="text" class="form-input" style="width: 80%;">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">2.</label>
+                            <input type="text" class="form-input" style="width: 80%;">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">3.</label>
+                            <input type="text" class="form-input" style="width: 80%;">
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 25px 0;">
+                        <h4 style="color: #4A7C59; margin-bottom: 10px;">🌟 私らしい働き方</h4>
+                        <div class="form-field">
+                            <label class="form-label">集中できる時間帯：</label>
+                            <input type="text" class="form-input" style="width: 60%;">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">好きな働き方：</label>
+                            <input type="text" class="form-input" style="width: 60%;">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">力を発揮できる場面：</label>
+                            <input type="text" class="form-input" style="width: 60%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ツール4: 持続可能成長チェックリスト -->
+        <div class="page">
+            <div class="page-header">
+                <h2 class="page-title">🌱 ツール4: 持続可能成長チェックリスト</h2>
+                <p class="page-subtitle">意思決定時の持続可能性チェック</p>
+            </div>
+            
+            <div class="section">
+                <h3 class="subsection-title">✅ 意思決定チェックシート</h3>
+                
+                <div class="tool-box">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <strong style="font-size: 1.2em;">持続可能性チェックリスト</strong><br>
+                        <span style="color: #666;">検討事項：_______________________</span>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #4A7C59; margin-bottom: 10px;">🔍 長期視点チェック</h4>
+                        <div class="checklist">
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>3年後の組織にとってプラスか？</span>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>次世代のメンバーにとって良い影響か？</span>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>環境や社会への配慮はできているか？</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #4A7C59; margin-bottom: 10px;">🔍 メンバーへの影響チェック</h4>
+                        <div class="checklist">
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>メンバーの成長につながるか？</span>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>過度な負担にならないか？</span>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>多様性を活かせているか？</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #4A7C59; margin-bottom: 10px;">🔍 組織力向上チェック</h4>
+                        <div class="checklist">
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>チームワークが強化されるか？</span>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>学習・改善の機会になるか？</span>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>創造性を発揮できるか？</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <h4 style="color: #4A7C59; margin-bottom: 10px;">🔍 実現可能性チェック</h4>
+                        <div class="checklist">
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>現実的なスケジュールか？</span>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>必要なリソースは確保できるか？</span>
+                            </div>
+                            <div class="checklist-item">
+                                <div class="checkbox"></div>
+                                <span>リスクへの対策はあるか？</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 25px; padding: 15px; background: #f0f8f0; border-radius: 8px;">
+                        <h4 style="color: #2D5016; margin-bottom: 10px;">📊 総合判定</h4>
+                        <div style="display: flex; gap: 20px;">
+                            <label style="display: flex; align-items: center;">
+                                <input type="radio" name="decision" style="margin-right: 8px;">
+                                <span>✅ 進行</span>
+                            </label>
+                            <label style="display: flex; align-items: center;">
+                                <input type="radio" name="decision" style="margin-right: 8px;">
+                                <span>🔄 修正後進行</span>
+                            </label>
+                            <label style="display: flex; align-items: center;">
+                                <input type="radio" name="decision" style="margin-right: 8px;">
+                                <span>⏸️ 再検討</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4 style="color: #2D5016; margin-bottom: 10px;">💡 改善点・注意事項</h4>
+                        <textarea class="form-textarea" placeholder="改善すべき点や特に注意すべき事項を記入してください"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 効果測定ツール -->
+        <div class="page">
+            <div class="page-header">
+                <h2 class="page-title">📊 効果測定ツール</h2>
+                <p class="page-subtitle">つながり度の変化を可視化</p>
+            </div>
+            
+            <div class="section">
+                <h3 class="subsection-title">📈 月次つながり度測定シート</h3>
+                
+                <div class="tool-box">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <div>
+                            <label class="form-label">実施日：</label>
+                            <input type="text" class="form-input">
+                        </div>
+                        <div>
+                            <label class="form-label">測定者：</label>
+                            <input type="text" class="form-input">
+                        </div>
+                    </div>
+                    
+                    <table class="score-table">
+                        <thead>
+                            <tr>
+                                <th>項目</th>
+                                <th>評価（1-5点）</th>
+                                <th>前月比</th>
+                                <th>備考</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background: #E8F5E8;">
+                                <td colspan="4" style="font-weight: bold; color: #2D5016;">🌱 自然との調和力</td>
+                            </tr>
+                            <tr>
+                                <td>無理のない自然な成長リズム</td>
+                                <td style="width: 80px;">____点</td>
+                                <td style="width: 80px;">____</td>
+                                <td style="width: 150px;">________</td>
+                            </tr>
+                            <tr>
+                                <td>長期的視点での判断文化</td>
+                                <td>____点</td>
+                                <td>____</td>
+                                <td>________</td>
+                            </tr>
+                            <tr>
+                                <td>失敗を学びに変える土壌</td>
+                                <td>____点</td>
+                                <td>____</td>
+                                <td>________</td>
+                            </tr>
+                            <tr>
+                                <td>変化への適応力</td>
+                                <td>____点</td>
+                                <td>____</td>
+                                <td>________</td>
+                            </tr>
+                            <tr style="background: #f0f8f0;">
+                                <td><strong>小計</strong></td>
+                                <td><strong>____/20点</strong></td>
+                                <td><strong>____</strong></td>
+                                <td></td>
+                            </tr>
+                            
+                            <tr style="background: #E6F2FF;">
+                                <td colspan="4" style="font-weight: bold; color: #2D5016;">🤝 仲間とのつながり力</td>
+                            </tr>
+                            <tr>
+                                <td>部署を超えた協力</td>
+                                <td>____点</td>
+                                <td>____</td>
+                                <td>________</td>
+                            </tr>
+                            <tr>
+                                <td>困った時の助け合い関係</td>
+                                <td>____点</td>
+                                <td>____</td>
+                                <td>________</td>
+                            </tr>
+                            <tr>
+                                <td>本音で話し合える関係</td>
+                                <td>____点</td>
+                                <td>____</td>
+                                <td>________</td>
+                            </tr>
+                            <tr>
+                                <td>多様性の活用</td>
+                                <td>____点</td>
+                                <td>____</td>
+                                <td>________</td>
+                            </tr>
+                            <tr style="background: #f0f8f0;">
+                                <td><strong>小計</strong></td>
+                                <td><strong>____/20点</strong></td>
+                                <td><strong>____</strong></td>
+                                <td></td>
+                            </tr>
+                            
+                            <tr style="background: #FFF9E6;">
+                                <td colspan="4" style="font-weight: bold; color: #2D5016;">💫 自分とのつながり力</td>
+                            </tr>
+                            <tr>
+                                <td>自分らしく働ける環境</td>
+                                <td>____点</td>
+                                <td>____</td>
+                                <td>________</td>
+                            </tr>
+                            <tr>
+                                <td>仕事への意味・やりがい実感</td>
+                                <td>____点</td>
+                                <td>____</td>
+                                <td>________</td>
+                            </tr>
+                            <tr>
+                                <td>内省・振り返りの時間</td>
+                                <td>____点</td>
+                                <td>____</td>
+                                <td>________</td>
+                            </tr>
+                            <tr>
+                                <td>成長・学習への意欲</td>
+                                <td>____点</td>
+                                <td>____</td>
+                                <td>________</td>
+                            </tr>
+                            <tr style="background: #f0f8f0;">
+                                <td><strong>小計</strong></td>
+                                <td><strong>____/20点</strong></td>
+                                <td><strong>____</strong></td>
+                                <td></td>
+                            </tr>
+                            
+                            <tr style="background: #4A7C59; color: white;">
+                                <td><strong>合計</strong></td>
+                                <td><strong>____/60点</strong></td>
+                                <td><strong>____</strong></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4 style="color: #2D5016; margin-bottom: 10px;">🎯 改善アクション</h4>
+                        <div class="form-field">
+                            <label class="form-label">強化したい分野：</label>
+                            <input type="text" class="form-input" style="width: 70%;">
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">具体的取り組み：</label>
+                            <textarea class="form-textarea" style="height: 60px;"></textarea>
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">来月の目標：</label>
+                            <input type="text" class="form-input" style="width: 70%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 活用ガイド -->
+        <div class="page">
+            <div class="page-header">
+                <h2 class="page-title">🎯 活用ガイド</h2>
+                <p class="page-subtitle">ツールキットを最大限活用するためのポイント</p>
+            </div>
+            
+            <div class="section">
+                <div class="highlight-box">
+                    <h3 style="color: #2D5016; margin-bottom: 15px;">成功の3つのポイント</h3>
+                    
+                    <div class="step-guide">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title">段階的な導入</div>
+                            <div>まず基本ツールから開始し、組織の状況に応じてペースを調整。小さな成功を積み重ねて大きな変化へつなげます。</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-guide">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title">継続的な改善</div>
+                            <div>定期的な効果測定と振り返り、メンバーからのフィードバック収集、ツールのカスタマイズと改良を継続します。</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-guide">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title">全員参加の推進</div>
+                            <div>リーダーが率先して実践し、成功事例を積極的に共有。お互いを応援し合う文化を作ります。</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h3 class="subsection-title">📅 導入スケジュール例</h3>
+                    
+                    <table class="score-table">
+                        <thead>
+                            <tr>
+                                <th>期間</th>
+                                <th>取り組み内容</th>
+                                <th>使用ツール</th>
+                                <th>目標</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1週目</td>
+                                <td>現状把握・意識づけ</td>
+                                <td>つながりチェックシート</td>
+                                <td>習慣化</td>
+                            </tr>
+                            <tr>
+                                <td>2-3週目</td>
+                                <td>対話の質向上</td>
+                                <td>本音対話ガイド</td>
+                                <td>信頼関係構築</td>
+                            </tr>
+                            <tr>
+                                <td>1ヶ月目</td>
+                                <td>個性の理解・活用</td>
+                                <td>強み発見マップ</td>
+                                <td>チーム力向上</td>
+                            </tr>
+                            <tr>
+                                <td>2-3ヶ月目</td>
+                                <td>持続可能な仕組み作り</td>
+                                <td>成長チェックリスト</td>
+                                <td>長期視点の定着</td>
+                            </tr>
+                            <tr>
+                                <td>3ヶ月目</td>
+                                <td>効果測定・次ステップ</td>
+                                <td>効果測定ツール</td>
+                                <td>継続的改善</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="tool-box">
+                    <div class="tool-title">
+                        <span class="tool-icon">📞</span>
+                        サポート・お問い合わせ
+                    </div>
+                    <p>ツールキットの活用でご質問やお困りのことがございましたら、お気軽にお問い合わせください。</p>
+                    
+                    <div style="margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <strong>株式会社創（SOU）</strong><br>
+                        📧 Email: info@sou-yakushima.com<br>
+                        📞 Phone: 0997-XX-XXXX<br>
+                        🌐 Website: https://www.sou-yakushima.com
+                    </div>
+                    
+                    <p style="margin-top: 15px; font-style: italic; color: #666;">
+                        「今ここから創める、未来を創る」<br>
+                        あなたの組織の新しい可能性を、心から応援しています。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // PDF生成・ダウンロード機能
+        function downloadPDF() {
+            const element = document.getElementById('pdf-content');
+            
+            // PDF生成オプション
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: '創(SOU)式つながり組織_実践ツールキット.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2,
+                    useCORS: true,
+                    letterRendering: true,
+                    allowTaint: false
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait',
+                    compress: true
+                },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+            
+            // ボタンを一時的に非表示
+            const buttons = document.querySelector('.button-container');
+            buttons.style.display = 'none';
+            
+            // PDF生成・ダウンロード実行
+            html2pdf()
+                .from(element)
+                .set(opt)
+                .save()
+                .then(() => {
+                    // ボタンを再表示
+                    buttons.style.display = 'flex';
+                    console.log('PDF生成完了');
+                })
+                .catch((error) => {
+                    console.error('PDF生成エラー:', error);
+                    alert('PDF生成中にエラーが発生しました。ブラウザの印刷機能をお試しください。');
+                    // ボタンを再表示
+                    buttons.style.display = 'flex';
+                });
+        }
+        
+        // 印刷機能
+        function printDocument() {
+            window.print();
+        }
+        
+        // フォームデータ保存機能
+        function saveFormData() {
+            const inputs = document.querySelectorAll('input[type="text"], textarea, input[type="radio"]:checked');
+            const formData = {};
+            
+            inputs.forEach((input, index) => {
+                if (input.type === 'radio') {
+                    formData[`radio_${input.name}`] = input.value;
+                } else {
+                    formData[`field_${index}`] = input.value;
+                }
+            });
+            
+            localStorage.setItem('souToolkitData', JSON.stringify(formData));
+            alert('✅ データを保存しました');
+        }
+        
+        // フォームデータ読み込み機能
+        function loadFormData() {
+            const savedData = localStorage.getItem('souToolkitData');
+            if (savedData) {
+                try {
+                    const formData = JSON.parse(savedData);
+                    const inputs = document.querySelectorAll('input[type="text"], textarea');
+                    
+                    inputs.forEach((input, index) => {
+                        if (formData[`field_${index}`]) {
+                            input.value = formData[`field_${index}`];
+                        }
+                    });
+                    
+                    // ラジオボタンも復元
+                    Object.keys(formData).forEach(key => {
+                        if (key.startsWith('radio_')) {
+                            const radioName = key.replace('radio_', '');
+                            const radio = document.querySelector(`input[name="${radioName}"][value="${formData[key]}"]`);
+                            if (radio) radio.checked = true;
+                        }
+                    });
+                    
+                    alert('✅ 保存されたデータを読み込みました');
+                } catch (error) {
+                    console.error('データ読み込みエラー:', error);
+                    alert('❌ データの読み込みに失敗しました');
+                }
+            } else {
+                alert('💡 保存されたデータがありません');
+            }
+        }
+        
+        // ページ読み込み完了後の初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('SOU Toolkit PDF Ready');
+            
+            // 自動保存機能（5分ごと）
+            setInterval(() => {
+                const inputs = document.querySelectorAll('input[type="text"], textarea');
+                let hasData = false;
+                inputs.forEach(input => {
+                    if (input.value.trim()) hasData = true;
+                });
+                
+                if (hasData) {
+                    saveFormData();
+                    console.log('自動保存実行');
+                }
+            }, 300000); // 5分 = 300000ms
+        });
+        
+        // エラーハンドリング
+        window.addEventListener('error', function(e) {
+            console.error('エラーが発生しました:', e.error);
+        });
+        
+        // 印刷時のスタイル調整
+        window.addEventListener('beforeprint', function() {
+            document.querySelector('.button-container').style.display = 'none';
+        });
+        
+        window.addEventListener('afterprint', function() {
+            document.querySelector('.button-container').style.display = 'flex';
+        });
+    </script>
+</body>
+</html>
